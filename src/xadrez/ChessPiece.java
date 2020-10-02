@@ -9,7 +9,7 @@ package xadrez;
  *
  * @author bbrun
  */
-public class ChessPiece extends Piece{
+public abstract class ChessPiece extends Piece{
     private Cor color;
     
     
@@ -21,5 +21,14 @@ public    ChessPiece(Board board,Cor color){
 public Cor getColor(){
 return color;
 }
+
+
+protected boolean isThereOpponentPiece(Position position){
+    ChessPiece p = (ChessPiece)getBoard().piece(position);
+    
+    return p != null && p.getColor() != color;
+
+}
+
 
 }

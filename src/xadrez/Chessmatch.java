@@ -6,6 +6,8 @@
 package xadrez;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -15,8 +17,8 @@ public class Chessmatch {
     private Board board;
     private int turn;
     private Cor currentPlayer;
-    
-    
+    private List<Piece> pieceOnTheBoard = new ArrayList<>();
+    private List<Piece> capturedPieces = new ArrayList<>();
     
     public Chessmatch(){
         turn = 1;
@@ -88,6 +90,11 @@ public class Chessmatch {
     Piece capturedPiece = board.removePiece(target);
     board.placePiece(p, target);
     
+    if(capturedPiece != null){
+    pieceOnTheBoard.remove(capturedPiece);
+    capturedPieces.add(capturedPiece);
+    
+    }
     return capturedPiece;
     }
     
@@ -101,6 +108,9 @@ public class Chessmatch {
     private void placeNewPiece(char column,int row,ChessPiece piece){
     
     board.placePiece(piece,new ChessPosition(column,row).toPosition());
+    pieceOnTheBoard.add(piece);
+    
+    
     }
     
     public boolean[][] possibleMoves(ChessPosition sourcePosition){

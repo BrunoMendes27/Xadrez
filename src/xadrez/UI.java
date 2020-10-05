@@ -5,8 +5,11 @@
  */
 package xadrez;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -50,10 +53,11 @@ class UI {
         }
         
         
-    public static void printMatch(Chessmatch chessMatch){
+    public static void printMatch(Chessmatch chessMatch, List<ChessPiece> captured){
     
     printBoard(chessMatch.getPieces());
     System.out.println();
+    printCapturedPieces(captured);
     System.out.println("Turn : " + chessMatch.getTurn());
     System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
     
@@ -102,4 +106,26 @@ public static void printBoard(ChessPiece[][] pieces,boolean[][] possibleMoves){
  }
  System.out.println("  a b c d e f g h");
  }
+
+private static void printCapturedPieces(List<ChessPiece> captured){
+
+    List<ChessPiece> white = captured.stream().filter(x -> x.getColor() == Cor.WHITE).collect(Collectors.toList());
+     List<ChessPiece> black = captured.stream().filter(x -> x.getColor() == Cor.BLACK).collect(Collectors.toList());
+     
+     System.out.println("Captured Pieces:");
+     System.out.print("White: ");
+     System.out.print(ANSI_WHITE);
+     System.out.println(Arrays.toString(white.toArray()));
+     System.out.print(ANSI_RESET);
+     
+     System.out.print("Black: ");
+     System.out.print(ANSI_YELLOW);
+     System.out.println(Arrays.toString(white.toArray()));
+     System.out.print(ANSI_RESET);
+     System.out.println();
+}
+
+
+
+
 }

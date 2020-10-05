@@ -80,6 +80,13 @@ public class Chessmatch {
     board.placePiece(piece,new ChessPosition(column,row).toPosition());
     }
     
+    public boolean[][] possibleMoves(ChessPosition sourcePosition){
+    Position position = sourcePosition.toPosition();
+    validateSourcePosition(position);
+    return board.piece(position).possibleMoves();
+    }
+    
+    
     private void initialSetup(){
     placeNewPiece('a', 1, new Rook(board, Cor.WHITE));
      //   placeNewPiece('b', 1, new Knight(board, Cor.WHITE));

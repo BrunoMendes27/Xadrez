@@ -13,12 +13,23 @@ import java.awt.Color;
  */
 public class Chessmatch {
     private Board board;
+    private int turn;
+    private Cor currentPlayer;
+    
+    
     
     public Chessmatch(){
+        turn = 1;
+        currentPlayer = Cor.WHITE;
     board = new Board(8,8);
     initialSetup();
     }
     
+    public int getTurn(){
+    return turn;
+    }
+    
+    public Cor getCurrentPlayer(){return currentPlayer;}
     
     public ChessPiece[][] getPieces(){
     ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -38,6 +49,7 @@ public class Chessmatch {
     validateSourcePosition(source);
     validateTargetPosition(source,target);
     Piece capturedPiece = makeMove(source,target);
+    nextTurn();
     return (ChessPiece)capturedPiece;
     }
     
@@ -58,10 +70,16 @@ public class Chessmatch {
     throw new ChessException("There is no piece at this position");
     }
     
+    if(currentPlayer != ((ChessPiece)board.piece(position)).getColor()){
+    throw new ChessException("A peça nao e sua!");
+    }
+    
     if(!board.piece(position).isThereAnyPossibleMove()){
     
     throw new ChessException("There is no possible moves");
     }
+    
+    
     
     }
     
@@ -73,7 +91,12 @@ public class Chessmatch {
     return capturedPiece;
     }
     
+    private void nextTurn(){
+    turn++;
     
+    currentPlayer = (currentPlayer == Cor.WHITE ) ? Cor.BLACK : Cor.WHITE;
+    
+    }
     
     private void placeNewPiece(char column,int row,ChessPiece piece){
     

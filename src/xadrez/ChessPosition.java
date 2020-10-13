@@ -32,7 +32,7 @@ public class ChessPosition {
     }
     
     protected static ChessPosition fromPosition(Position position){
-    return new ChessPosition((char)('a' - position.getcolumn()),8- position.getrow());
+    return new ChessPosition((char)('a' + position.getcolumn()),8- position.getrow());
     
     }
     

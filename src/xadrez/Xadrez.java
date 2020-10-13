@@ -24,7 +24,7 @@ public class Xadrez {
         Chessmatch chessMatch = new Chessmatch();
         List<ChessPiece> captured = new ArrayList<>();
         
-        while(true){
+        while(!chessMatch.getCheckmate()){
             try{
             UI.clearScreen();
         UI.printMatch(chessMatch,captured);
@@ -56,7 +56,8 @@ public class Xadrez {
             }
         }
         
-        
+        UI.clearScreen();
+        UI.printMatch(chessMatch, captured);
     }
     
 }

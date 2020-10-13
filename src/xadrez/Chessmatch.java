@@ -8,6 +8,7 @@ package xadrez;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -17,6 +18,8 @@ public class Chessmatch {
     private Board board;
     private int turn;
     private Cor currentPlayer;
+    private boolean check;
+    private boolean checkmate;
     private List<Piece> pieceOnTheBoard = new ArrayList<>();
     private List<Piece> capturedPieces = new ArrayList<>();
     
@@ -30,6 +33,10 @@ public class Chessmatch {
     public int getTurn(){
     return turn;
     }
+    
+    public boolean getCheck(){ return check;}
+    
+    public boolean getCheckmate(){ return checkmate;}
     
     public Cor getCurrentPlayer(){return currentPlayer;}
     
@@ -51,7 +58,24 @@ public class Chessmatch {
     validateSourcePosition(source);
     validateTargetPosition(source,target);
     Piece capturedPiece = makeMove(source,target);
-    nextTurn();
+    
+    if(testCheck(currentPlayer)){
+    
+    undoMove(source,target,capturedPiece);
+    throw new ChessException("nao podes te meter em check");
+    }
+    
+    check= (testCheck(opponent(currentPlayer))) ? true : false;
+    
+    if(testCheckmate(opponent(currentPlayer))){
+    checkmate = true;
+    }else{
+     nextTurn();
+    }
+    
+   
+    
+    
     return (ChessPiece)capturedPiece;
     }
     
@@ -85,6 +109,22 @@ public class Chessmatch {
     
     }
     
+    
+    private void undoMove(Position source, Position target,Piece capturedPiece){
+    
+    Piece p = board.removePiece(target);
+    board.placePiece(p, source);
+    
+    if(capturedPiece != null){
+    board.placePiece(capturedPiece, target);
+    capturedPieces.remove(capturedPiece);
+    pieceOnTheBoard.add(capturedPiece);
+
+    }
+    
+    }
+    
+    
     private Piece makeMove(Position source,Position target){
     Piece p= board.removePiece(source);
     Piece capturedPiece = board.removePiece(target);
@@ -105,6 +145,79 @@ public class Chessmatch {
     
     }
     
+    private Cor opponent(Cor cor){
+    
+    return (cor == Cor.WHITE) ? Cor.BLACK: Cor.WHITE;
+    
+    }
+    
+    
+    private ChessPiece king(Cor cor){
+    
+    List<Piece> list = pieceOnTheBoard.stream().filter(x ->((ChessPiece)x).getColor() == cor).collect(Collectors.toList());
+    for(Piece p : list){
+    
+    if(p instanceof King){
+    
+    return (ChessPiece)p;
+    }
+    }
+    
+    throw new IllegalStateException("Nao existe " + cor + "rei no tabuleiro");
+    
+    }
+    
+    private boolean testCheckmate(Cor cor){
+    
+    if(!testCheck(cor)){return false;}
+    //todas as peças com a mesma cor
+    List<Piece> list =pieceOnTheBoard.stream().filter(x ->((ChessPiece)x).getColor() == cor).collect(Collectors.toList());
+    
+    for(Piece p : list){
+    
+   boolean[][]mat= p.possibleMoves();
+   for(int i=0;i<board.getRows();i++){
+   for(int j=0;j<board.getColumns();j++){
+   if(mat[i][j]){
+   Position source = ((ChessPiece)p).getChessPosition().toPosition();
+   Position target = new Position(i,j);
+   Piece capturedPiece = makeMove(source,target);
+   boolean testCheck = testCheck(cor);
+   undoMove(source,target,capturedPiece);
+   if(!testCheck){
+   
+   return false;
+   }
+   
+   }
+   }
+   
+   }
+        
+    }
+    return true;
+    }
+    
+    
+    private boolean testCheck(Cor cor){
+    
+    Position kingPosition =king(cor).getChessPosition().toPosition();
+    List<Piece> opponentPieces = pieceOnTheBoard.stream().filter(x ->((ChessPiece)x).getColor() == opponent(cor)).collect(Collectors.toList());
+    for(Piece p :opponentPieces){
+    boolean[][] mat = p.possibleMoves();
+    if(mat[kingPosition.getrow()][kingPosition.getcolumn()]){
+    
+    return true;
+    }
+    
+    }
+    return false;
+    }
+    
+    
+    
+    
+    
     private void placeNewPiece(char column,int row,ChessPiece piece){
     
     board.placePiece(piece,new ChessPosition(column,row).toPosition());
@@ -121,39 +234,13 @@ public class Chessmatch {
     
     
     private void initialSetup(){
-    placeNewPiece('a', 1, new Rook(board, Cor.WHITE));
-     //   placeNewPiece('b', 1, new Knight(board, Cor.WHITE));
-       // placeNewPiece('c', 1, new Bishop(board, Cor.WHITE));
-       // placeNewPiece('d', 1, new Queen(board, Cor.WHITE));
-       // placeNewPiece('e', 1, new King(board, Cor.WHITE));
-       // placeNewPiece('f', 1, new Bishop(board, Cor.WHITE));
-       // placeNewPiece('g', 1, new Knight(board, Cor.WHITE));
-        placeNewPiece('h', 1, new Rook(board, Cor.WHITE));
-       // placeNewPiece('a', 2, new Pawn(board, Cor.WHITE, this));
-       // placeNewPiece('b', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('c', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('d', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('e', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('f', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('g', 2, new Pawn(board, Cor.WHITE, this));
-        //placeNewPiece('h', 2, new Pawn(board, Cor.WHITE, this));
-
-        placeNewPiece('a', 8, new Rook(board, Cor.BLACK));
-        //placeNewPiece('b', 8, new Knight(board, Cor.BLACK));
-        //placeNewPiece('c', 8, new Bishop(board, Cor.BLACK));
-       // placeNewPiece('d', 8, new Queen(board, Cor.BLACK));
-        placeNewPiece('e', 8, new King(board, Cor.BLACK));
-      //  placeNewPiece('f', 8, new Bishop(board, Cor.BLACK));
-       // placeNewPiece('g', 8, new Knight(board, Cor.BLACK));
-        placeNewPiece('h', 8, new Rook(board, Cor.BLACK));
-       // placeNewPiece('a', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('b', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('c', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('d', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('e', 7, new Pawn(board, Cor.BLACK, this));
-        //placeNewPiece('f', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('g', 7, new Pawn(board, Cor.BLACK, this));
-       // placeNewPiece('h', 7, new Pawn(board, Cor.BLACK, this));
+        
+    placeNewPiece('h', 7, new Rook(board, Cor.WHITE));
+        placeNewPiece('d', 1, new Rook(board, Cor.WHITE));
+        placeNewPiece('e', 1, new King(board, Cor.WHITE));
+        
+         placeNewPiece('b', 8, new Rook(board, Cor.BLACK));
+        placeNewPiece('a', 8, new King(board, Cor.BLACK));
     }
     
 }

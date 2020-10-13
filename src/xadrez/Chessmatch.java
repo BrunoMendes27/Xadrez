@@ -238,7 +238,12 @@ public class Chessmatch {
     private void initialSetup(){
         
         placeNewPiece('a', 1, new Rook(board, Cor.WHITE));
+        placeNewPiece('b', 1, new Knight(board, Cor.WHITE));
+        placeNewPiece('c', 1, new Bishop(board, Cor.WHITE));
+        placeNewPiece('d', 1, new Queen(board, Cor.WHITE));
         placeNewPiece('e', 1, new King(board, Cor.WHITE));
+        placeNewPiece('f', 1, new Bishop(board, Cor.WHITE));
+        placeNewPiece('g', 1, new Knight(board, Cor.WHITE));
         placeNewPiece('h', 1, new Rook(board, Cor.WHITE));
         placeNewPiece('a', 2, new Pawn(board, Cor.WHITE));
         placeNewPiece('b', 2, new Pawn(board, Cor.WHITE));
@@ -249,8 +254,12 @@ public class Chessmatch {
         placeNewPiece('g', 2, new Pawn(board, Cor.WHITE));
         placeNewPiece('h', 2, new Pawn(board, Cor.WHITE));
 
-        placeNewPiece('b', 8, new Rook(board, Cor.BLACK));
         placeNewPiece('a', 8, new Rook(board, Cor.BLACK));
+        placeNewPiece('b', 8, new Knight(board, Cor.BLACK));
+        placeNewPiece('c', 8, new Bishop(board, Cor.BLACK));
+        placeNewPiece('d', 8, new Queen(board, Cor.BLACK));
+        placeNewPiece('f', 8, new Bishop(board, Cor.BLACK));
+        placeNewPiece('g', 8, new Knight(board, Cor.BLACK));
         placeNewPiece('e', 8, new King(board, Cor.BLACK));
         placeNewPiece('h', 8, new Rook(board, Cor.BLACK));
         placeNewPiece('a', 7, new Pawn(board, Cor.BLACK));

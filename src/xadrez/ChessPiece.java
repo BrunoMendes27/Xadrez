@@ -11,7 +11,7 @@ package xadrez;
  */
 public abstract class ChessPiece extends Piece{
     private Cor color;
-    
+    private int moveCount;
     
 public    ChessPiece(Board board,Cor color){
     super(board);
@@ -22,6 +22,18 @@ public Cor getColor(){
 return color;
 }
 
+public int getMoveCount(){
+
+return moveCount;
+}
+
+public void increaseMoveCount(){
+moveCount++;
+}
+
+public void decreaseMoveCount(){
+moveCount--;
+}
 
 public ChessPosition getChessPosition(){
 

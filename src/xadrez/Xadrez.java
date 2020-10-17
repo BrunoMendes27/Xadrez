@@ -47,6 +47,14 @@ public class Xadrez {
         captured.add(capturedPiece);
         }
         
+        if(chessMatch.getPromoted() != null){
+        
+        System.out.print("peca para promocao (B/N/R/Q): ");
+        String type = sc.nextLine();
+        chessMatch.replacePromotedPiece(type);
+            
+        }
+        
             }catch(ChessException e){
             System.out.println(e.getMessage());
             sc.nextLine();
